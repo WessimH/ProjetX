@@ -73,4 +73,21 @@ function recommanderPostes($utilisateur, $postes)
     }
     return $recommandations;
 }
+//machine learning :D
+function recommanderPostesML($utilisateur, $postes)
+{
+    $recommandations = [];
+    foreach ($postes as $poste) {
+        $score = 0;
+        foreach ($poste->tags as $tag) {
+            if (in_array($tag, $utilisateur->preferencesTags)) {
+                $score++;
+            }
+        }
+        if ($score > 0) {
+            array_push($recommandations, $poste);
+        }
+    }
+    return $recommandations;
+}
 

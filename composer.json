@@ -1,0 +1,6 @@
+{
+    "require": {
+        "rubix/tensor": "^3.0",
+        "rubix/ml": "^2.4"
+    }
+}
