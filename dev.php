@@ -33,5 +33,5 @@
 </div>
 
 <?php // Voici un exemple de poste
-// TODO remplacer les champs par des datas?>
-
+require_once 'Component/BDDREQUEST.php';
+var_dump( BDD_request("SELECT * FROM poste"));
