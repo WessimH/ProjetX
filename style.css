@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Kanit:700|Kanit:400');
 
 :root[data-theme="light"] {
-    --text: #0a0000;
     --background: #ffffff;
     --primary: #fa3838;
     --secondary: #fda0a0;
@@ -9,7 +8,6 @@
 }
 
 :root[data-theme="dark"] {
-    --text: #fff5f5;
     --background: #000000;
     --primary: #c70505;
     --secondary: #5f0202;
@@ -34,7 +32,7 @@ html {
 /* 16px */
 
 h1 {
-    font-size: 4.210rem; /* 67.36px */
+    font-size:  84px; /* 84px */
 }
 
 h2 {
