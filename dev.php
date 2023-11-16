@@ -34,4 +34,7 @@
 
 <?php // Voici un exemple de poste
 require_once 'Component/BDDREQUEST.php';
-var_dump( BDD_request("SELECT * FROM poste"));
+var_dump( BDD_request("SELECT * from poste"));
+
+?>
+
