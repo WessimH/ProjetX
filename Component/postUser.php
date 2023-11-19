@@ -23,7 +23,7 @@ if ($Post == null) {
     ON 
         poste.id_utilisateur = utilisateurs.id_utilisateur 
     WHERE 
-        poste.id_poste = $id_poste");
+        poste.id_poste = :id_poste", [':id_poste' => $id_poste]); //on récupère les données du post
         if (empty($post_request)) {
             // Gérer le cas où aucun résultat n'est retourné
             echo "Aucun post n'a été trouvé";
@@ -69,7 +69,7 @@ if ($Post == null) {
                                 <div class="flex-grow-1"></div>
                                 <p>
                                     <?php
-                                    echo implode(BDD_request("SELECT COUNT(id_like) FROM userlikes WHERE id_poste=$id_poste")[0]) ?>
+                                    echo implode(BDD_request("SELECT COUNT(id_like) FROM userlikes WHERE id_poste = :id_poste", [':id_poste' => $id_poste])[0]) ?>
                                 </p>
                                 <script>
                                     document.getElementById('likeButton').addEventListener('click', function() {
