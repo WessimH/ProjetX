@@ -32,6 +32,7 @@
     </div>
 </div>
 
-<?php // Voici un exemple de poste
-require_once 'Component/BDDREQUEST.php';
-var_dump( BDD_request("SELECT * FROM poste"));
+<?php  include("Component/postUser.php")// Voici un exemple de poste
+?>
+
+<
