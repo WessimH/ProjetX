@@ -54,3 +54,11 @@ h5 {
 small {
     font-size: 0.750rem; /* 12px */
 }
+#heartIcon {
+    cursor: pointer; /* Change le curseur pour indiquer qu'il est cliquable */
+}
+
+#heartIcon:active {
+    fill: red;
+    stroke: red;
+}

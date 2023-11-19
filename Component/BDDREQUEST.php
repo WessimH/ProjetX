@@ -1,14 +1,36 @@
 <?php
-function BDD_request($request) //fonction qui permet de faire des requetes à la base de donnée
+function BDD_request($request, $parameters = [], $AffectedRows = false)
 {
-    $db = new PDO('mysql:host=localhost;dbname=wessim;charset=utf8', 'root',''); //connexion à la base de donnée
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $req = $db->prepare($request); //préparation de la requete
-    //$req->execute();
-    //on détecte le mot select dans la requete
-    if (preg_match("/SELECT/i", $request)) {    //si on a un select
-        return $req->fetchAll(PDO::FETCH_ASSOC); //on retourne un tableau associatif
-    } else {
-        return $req->execute(); //sinon on retourne un booléen
+    try {
+        // Ensure the request is not empty
+        if (empty($request)) {
+            throw new ValueError("The SQL query cannot be empty.");
+        }
+
+        // Your database connection code here
+        $db = new PDO('mysql:host=localhost;dbname=phpsite;charset=utf8', 'root', '');
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $req = $db->prepare($request);
+
+        // Execute the query with parameters if any
+        $req->execute($parameters);
+
+        // Handling the results based on the type of query
+        if (preg_match("/SELECT/i", $request)) {
+            return $req->fetchAll(PDO::FETCH_ASSOC);
+        } elseif ($AffectedRows == true) {
+            return $req->rowCount();
+        }
+
+    } catch (PDOException $e) {
+
+        return error_log($e->getMessage());
+    } catch (ValueError $e) {
+        return error_log($e->getMessage());
     }
+    return null;
 }
+
+?>
+
