@@ -1,4 +1,5 @@
 <?php
+define('compenent_bdd_request', __DIR__);
 function BDD_request($request, $parameters = [], $AffectedRows = false)
 {
     try {

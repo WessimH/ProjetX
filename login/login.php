@@ -1,4 +1,23 @@
+<?php
+require 'Component/BDDREQUEST.php';
+//get the data from the form
+$email = $_POST['Email'];
+$password = $_POST['Password'];
+//sanitize input
+$email = filter_var($email, FILTER_SANITIZE_EMAIL);
+//check if the email is valid
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    header("Location: signUp.php?error=invalidEmail");
+    exit();
+}
+//check if the email already exist
+$sql = "SELECT * FROM utilisateurs WHERE adresse_mail = ':email'";
+$result = BDD_request($sql , array(':email' => $email));
+if ($result) {
+    header("Location: signUp.php?error=emailAlreadyExist");
+    exit();
 
+}?>
     <img src="img/logo.png" alt="logo" id="logo">
     <form method="post" action="login.php">
     <div class="form-group">
