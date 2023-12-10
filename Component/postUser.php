@@ -1,7 +1,26 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <script src="js/modeSelector.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 <?PHP require_once('BDDREQUEST.php');
 
 $Post = BDD_request("SELECT id_poste FROM poste");
+
+// Vérifiez si l'utilisateur est connecté
+if (!isset($_COOKIE['username'])) {
+    header('Location: login.php'); // Redirigez vers la page de connexion si non connecté
+    exit();
+}
+
 if ($Post == null) {
     echo "Aucun post n'a été trouvé";
 } else {
@@ -60,7 +79,7 @@ if ($Post == null) {
 
                             <input type="text" name="comment" placeholder="Comment">
                             <button class="btn btn-primary">Comment</button>
-                            <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="post">
+                            <form action="postUser.php" method="post">
                                 <script>
                                     function like() {
                                         document.getElementById("like").submit();
@@ -72,23 +91,24 @@ if ($Post == null) {
                                     echo implode(BDD_request("SELECT COUNT(id_like) FROM userlikes WHERE id_poste=$id_poste")[0]) ?>
                                 </p>
                                 <script>
-                                    document.getElementById('likeButton').addEventListener('click', function() {
+                                    document.getElementById('likeButton').addEventListener('click', function () {
                                         // Changer la couleur de fond
-                                        document.getElementById('heartIcon').addEventListener('click', function() {
+                                        document.getElementById('heartIcon').addEventListener('click', function () {
                                             // Changer la couleur du SVG
                                             this.style.fill = 'red';
-                                            this.style.stroke = 'red';});
+                                            this.style.stroke = 'red';
+                                        });
 
                                         // Envoyer une requête AJAX
                                         $.ajax({
-                                            url: 'chemin_vers_votre_script_php.php', // Remplacez par l'URL de votre script PHP
+                                            url: 'postUser.php', // Remplacez par l'URL de votre script PHP
                                             type: 'post',
-                                            data: { 'action': 'like' }, // Envoyez les données nécessaires
-                                            success: function(response) {
+                                            data: {'action': 'like'}, // Envoyez les données nécessaires
+                                            success: function (response) {
                                                 // Gérez la réponse ici, si nécessaire
                                                 console.log(response);
                                             },
-                                            error: function(xhr, status, error) {
+                                            error: function (xhr, status, error) {
                                                 // Gérez les erreurs ici
                                                 console.error(error);
                                             }
@@ -97,7 +117,8 @@ if ($Post == null) {
                                 </script>
                                 <button id="likeButton" style="border: none; background-color: rgba(123,102,202,0)"
                                         name="clic">
-                                    <svg id="heartIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    <svg id="heartIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                         viewBox="0 0 24 24"
                                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                          stroke-linejoin="round" class="feather feather-heart">
                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -118,15 +139,7 @@ if ($Post == null) {
         <?php
     }
 }
+
 //switch case to see if values are null or not in the array
-for ($j = 0; $j < count($post_content); $j++) {
-    switch ($post_content[$j]) {
-        case null:
-            header('Location: redirect.php');
-            break;
-        default:
-            break;
-    }
-}
 ?>
 

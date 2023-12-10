@@ -23,6 +23,7 @@ function BDD_request($request, $parameters = [], $AffectedRows = false)
             return $req->rowCount();
         }
 
+
     } catch (PDOException $e) {
 
         return error_log($e->getMessage());
@@ -31,6 +32,5 @@ function BDD_request($request, $parameters = [], $AffectedRows = false)
     }
     return null;
 }
-
 ?>
 
