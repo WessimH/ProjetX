@@ -36,29 +36,46 @@ $tag = BDD_request("SELECT id_tag, description FROM tags");
 <button type='submit' class='btn btn-primary'>Submit</button>
 </form>
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Assuming sanitize_string() is your custom function, make sure to define it before using it.
-    // For example, you could replace it with a simple string replacement function, like this:
-    function sanitize_file_name($filename) {
-        // Remove any characters that are not letters, numbers, dots, or hyphens
-        return preg_replace('/[^A-Za-z0-9\._-]/', '', $filename);
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['pic'])) {
+// Ensure that the form is encoded as multipart/form-data
+if ($_FILES['pic']['error'] === UPLOAD_ERR_OK) {
+// Validate the file is an image
+$check = getimagesize($_FILES['pic']['tmp_name']);
+if($check !== false) {
+// Sanitize the file name and determine the path
+$file = sanitize_file_name($_FILES['pic']['name']);
+$path = 'userpics/' . $file;
 
-    $file = sanitize_file_name($_FILES['pic']['name']);
-    if (move_uploaded_file($_FILES['pic']['tmp_name'], 'userpics/' . $file)) {
-        $categorie = $_POST['categorie'];
-        $titre = $_POST['title'];
-        $description = $_POST['description'];
-        $id_utilisateur = $_COOKIE['id_utilisateur'];
-        $path = 'userpics/' . $file;
+// Attempt to move the uploaded file to its new location
+if (move_uploaded_file($_FILES['pic']['tmp_name'], $path)) {
+// Sanitize the other fields
+$categorie = filter_var($_POST['categorie'], FILTER_SANITIZE_STRING);
+$titre = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
+$description = filter_var($_POST['description'], FILTER_SANITIZE_STRING);
+$id_utilisateur = $_COOKIE['id_utilisateur']; // Ensure this cookie is set and sanitized
 
-        BDD_request("INSERT INTO poste (id_utilisateur, titre, description, photo_poste) VALUES (:id_utilisateur, :titre, :description, :photo_poste)", array(':id_utilisateur' => $id_utilisateur, ':titre' => $titre, ':description' => $description, ':photo_poste' => $path));
-    } else {
-        // Handle error when file upload fails
-        echo "error";
-    }
+// Execute the database query safely
+$params = [
+':id_utilisateur' => $id_utilisateur,
+':titre' => $titre,
+':description' => $description,
+':photo_poste' => $path
+];
+BDD_request("INSERT INTO poste (id_utilisateur, titre, description, photo_poste) VALUES (:id_utilisateur, :titre, :description, :photo_poste)", $params);
+} else {
+echo "File could not be uploaded.";
+}
+} else {
+echo "Uploaded file is not a valid image.";
+}
+} else {
+echo "File upload error: " . $_FILES['pic']['error'];
+}
 }
 
+// Function to sanitize file names (can be expanded as needed)
+function sanitize_file_name($filename) {
+return preg_replace('/[^A-Za-z0-9\._-]/', '', $filename);
+}
 ?>
-
 
