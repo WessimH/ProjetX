@@ -8,62 +8,33 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<?PHP require_once('BDDREQUEST.php');
+<?PHP
+include "formpost.php";
+$post_request = BDD_request("SELECT utilisateurs.pseudo,
+       poste.titre, poste.date,
+       poste.photo_poste,
+       poste.description,
+       utilisateurs.id_utilisateur
+FROM poste INNER JOIN utilisateurs 
+    ON poste.id_utilisateur = utilisateurs.id_utilisateur;");
 
-$Post = BDD_request("SELECT id_poste FROM poste");
-
-// Vérifiez si l'utilisateur est connecté
-if (!isset($_COOKIE['username'])) {
-    header('Location: login.php'); // Redirigez vers la page de connexion si non connecté
-    exit();
-}
-
-if ($Post == null) {
+if ($post_request == null) {
     echo "Aucun post n'a été trouvé";
 } else {
-    for ($i = 0; $i < count($Post); $i++) {
-        //on itère sur les id des posts
-        $id_poste = intval($Post[$i]['id_poste']);
 
-        $post_request = BDD_request("SELECT 
-        utilisateurs.pseudo, 
-        poste.titre, 
-        poste.date, 
-        poste.photo_poste, 
-        poste.description,
-        utilisateurs.id_utilisateur
-    FROM 
-        poste 
-    INNER JOIN 
-        utilisateurs 
-    ON 
-        poste.id_utilisateur = utilisateurs.id_utilisateur 
-    WHERE 
-        poste.id_poste = $id_poste");
+    for ($i = 0; $i < count($post_request); $i++) {
+        //on itère sur les id des posts
+
+
+
         if (empty($post_request)) {
             // Gérer le cas où aucun résultat n'est retourné
             echo "Aucun post n'a été trouvé";
+            exit();
         }
 
-        $description = $post_request[0]['description'];
-        $titre = $post_request[0]['titre'];
-        $date = $post_request[0]['date'];
-        $photo_poste = $post_request[0]['photo_poste'];
-        $psuedo = $post_request[0]['pseudo'];
-        $id_utilisateur = $post_request[0]['id_utilisateur'];
-        $post_content = [$description, $titre, $date, $photo_poste, $psuedo];
-        //we check if post content value are null
-        if (in_array(null, $post_content)) {
-            break;
-        }
-
-
-        if (!is_string($titre) && !is_string($photo_poste) && !is_string($psuedo)) {
-            var_dump($post_request);
-        }
         ?>
 
         <div class="row">
@@ -71,10 +42,10 @@ if ($Post == null) {
             <div class="col-sm-6">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title"><?php echo $psuedo; ?></h5>
-                        <h6 class="card-subtitle mb-2 text-muted"> <?php echo $titre; ?></h6>
-                        <p class="card-text"><?php echo $description; ?></p>
-                        <img src="<?php echo $photo_poste; ?>" alt="Photo poste">
+                        <h5 class="card-title"><?php echo $post_request[$i]["pseudo"]; ?></h5>
+                        <h6 class="card-subtitle mb-2 text-muted"> <?php echo $post_request[$i]["titre"]; ?></h6>
+                        <p class="card-text"><?php echo $post_request[$i]["description"]; ?></p>
+                        <img src="<?php echo $post_request[$i]["photo_poste"]; ?>" alt="Photo poste">
                         <div class="d-flex justify-content-between">
 
                             <input type="text" name="comment" placeholder="Comment">
@@ -86,10 +57,7 @@ if ($Post == null) {
                                     }
                                 </script>
                                 <div class="flex-grow-1"></div>
-                                <p>
-                                    <?php
-                                    echo implode(BDD_request("SELECT COUNT(id_like) FROM userlikes WHERE id_poste=$id_poste")[0]) ?>
-                                </p>
+
                                 <script>
                                     document.getElementById('likeButton').addEventListener('click', function () {
                                         // Changer la couleur de fond
@@ -131,7 +99,7 @@ if ($Post == null) {
                                 <script></script>
                             </form>
                         </div>
-                        <p class="card-text"><small class="text-muted"><?php echo $date; ?></small></p>
+                        <p class="card-text"><small class="text-muted"><?php echo $post_request[$i]['date']; ?></small></p>
                     </div>
                 </div>
             </div>

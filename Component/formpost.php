@@ -2,14 +2,7 @@
 require 'BDDREQUEST.php';
 $tag = BDD_request("SELECT id_tag, description FROM tags");
 
-// form to post a post with bootstrap
-/*
- * @param $id_utilisateur
- * @param $titre
- * @param $description
- * @param $photo_poste
- * @param $id_tag
- */
+
 
 ?>
 <form method="post" action="formpost.php">
@@ -43,17 +36,28 @@ $tag = BDD_request("SELECT id_tag, description FROM tags");
 <button type='submit' class='btn btn-primary'>Submit</button>
 </form>
 <?php
-$file = trim(sanitize_string($_FILES['pic']));
-move_uploaded_file($_FILES['pic']['tmp_name'], 'userpics/'.$file);
-$categorie = $_POST['categorie'];
-$titre = $_POST['title'];
-$description = $_POST['description'];
-//get the path of the file
-$id_utilisateur = $_COOKIE['id_utilisateur'];
-$path = 'userpics/'.$file;
-//get the id of the user
-BDD_request("INSERT INTO poste (:id_utilisateur, :titre, :description, :photo_poste)" , array(':id_utilisateur' => $id_utilisateur, ':titre' => $titre, ':description' => $description, ':photo_poste' => $path));
-$id_utilisateur = $_COOKIE['id_utilisateur'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Assuming sanitize_string() is your custom function, make sure to define it before using it.
+    // For example, you could replace it with a simple string replacement function, like this:
+    function sanitize_file_name($filename) {
+        // Remove any characters that are not letters, numbers, dots, or hyphens
+        return preg_replace('/[^A-Za-z0-9\._-]/', '', $filename);
+    }
+
+    $file = sanitize_file_name($_FILES['pic']['name']);
+    if (move_uploaded_file($_FILES['pic']['tmp_name'], 'userpics/' . $file)) {
+        $categorie = $_POST['categorie'];
+        $titre = $_POST['title'];
+        $description = $_POST['description'];
+        $id_utilisateur = $_COOKIE['id_utilisateur'];
+        $path = 'userpics/' . $file;
+
+        BDD_request("INSERT INTO poste (id_utilisateur, titre, description, photo_poste) VALUES (:id_utilisateur, :titre, :description, :photo_poste)", array(':id_utilisateur' => $id_utilisateur, ':titre' => $titre, ':description' => $description, ':photo_poste' => $path));
+    } else {
+        // Handle error when file upload fails
+        echo "error";
+    }
+}
 
 ?>
 

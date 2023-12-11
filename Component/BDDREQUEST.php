@@ -12,6 +12,7 @@ function BDD_request($request, $parameters = [], $AffectedRows = false)
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $req = $db->prepare($request);
+        $req->debugDumpParams();
 
         // Execute the query with parameters if any
         $req->execute($parameters);
@@ -22,7 +23,7 @@ function BDD_request($request, $parameters = [], $AffectedRows = false)
         } elseif ($AffectedRows == true) {
             return $req->rowCount();
         }
-
+        $req->debugDumpParams();
 
     } catch (PDOException $e) {
 

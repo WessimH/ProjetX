@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<form method="post">
+<form method="post" action="signUp.php">
     <div class="form-group">
         <label for="exampleInputEmail1">Pseudo</label>
         <input type="text" class="form-control"  aria-describedby="emailHelp"
@@ -28,3 +28,17 @@
     </div>
     <button type="submit" class="btn btn-primary" name="submit">Submit</button>
 </form>
+<?php
+if (isset($_POST['submit'])) {
+    $pseudo = $_POST['pseudo'];
+    $mail = $_POST['email'];
+    $password = $_POST['password'];
+    $user = BDD_request("SELECT * FROM utilisateurs WHERE pseudo=':pseudo' AND mot_de_passe=':password'", array(':pseudo' => $pseudo, ':password' => $password));
+    if (empty($user)) {
+        BDD_request("INSERT INTO utilisateurs (pseudo, adresse_mail, mot_de_passe) VALUES (:pseudo, :mail, :password)", array(':pseudo' => $pseudo, ':mail' => $mail, ':password' => $password));
+        header('Location: login.php');
+    }
+    else {
+        echo "This pseudo is already taken";
+    }
+}
