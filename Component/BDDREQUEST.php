@@ -32,5 +32,5 @@ function BDD_request($request, $parameters = [], $AffectedRows = false)
     }
     return null;
 }
-?>
+
 

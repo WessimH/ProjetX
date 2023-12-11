@@ -52,7 +52,7 @@ $description = $_POST['description'];
 $id_utilisateur = $_COOKIE['id_utilisateur'];
 $path = 'userpics/'.$file;
 //get the id of the user
-BDD_request("INSERT INTO poste (:id_utilisateur, :titre, :description, :photo_poste", array(':id_utilisateur' => $id_utilisateur, ':titre' => $titre, ':description' => $description, ':photo_poste' => $path));
+BDD_request("INSERT INTO poste (:id_utilisateur, :titre, :description, :photo_poste)" , array(':id_utilisateur' => $id_utilisateur, ':titre' => $titre, ':description' => $description, ':photo_poste' => $path));
 $id_utilisateur = $_COOKIE['id_utilisateur'];
 
 ?>
